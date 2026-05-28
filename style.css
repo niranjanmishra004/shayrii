@@ -670,8 +670,8 @@ body {
 /* Shayari Grid Layout */
 .shayari-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 35px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
     margin-top: 15px;
     align-items: start;
 }
@@ -1541,6 +1541,31 @@ body {
     .form-row {
         grid-template-columns: 1fr;
         gap: 0;
+    }
+
+    /* Smaller card spacing and typography for phones */
+    .shayari-card {
+        padding: 20px;
+        border-radius: 16px;
+    }
+    .shayari-card .card-title {
+        font-size: 16px;
+    }
+    .shayari-card .card-verses {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    /* Composer form spacing for small screens */
+    .composer-layout {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+    .composer-form-card {
+        padding: 20px;
+    }
+    .preview-panel {
+        display: block;
     }
 }
 
