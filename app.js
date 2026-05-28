@@ -204,24 +204,58 @@ const DOM = {
     
     toastContainer: document.getElementById('toastContainer')
 };
+function addSafeListener(element, eventName, handler) {
+    if (element) {
+        element.addEventListener(eventName, handler);
+    }
+}
+
+function resetCategoryFilterUI() {
+    activeCategoryFilter = 'all';
+    if (!DOM.categoriesFilterContainer) return;
+
+    const chips = DOM.categoriesFilterContainer.querySelectorAll('.filter-chip');
+    chips.forEach(chip => chip.classList.remove('active'));
+    const allChip = DOM.categoriesFilterContainer.querySelector('.filter-chip[data-category="all"]');
+    if (allChip) allChip.classList.add('active');
+}
+
+function normalizeShayari(rawShayari = {}) {
+    return {
+        id: rawShayari.id || `shayari-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+        title: typeof rawShayari.title === 'string' ? rawShayari.title : '',
+        content: typeof rawShayari.content === 'string' ? rawShayari.content : '',
+        category: typeof rawShayari.category === 'string' ? rawShayari.category : 'General',
+        tags: Array.isArray(rawShayari.tags) ? rawShayari.tags.filter(Boolean) : [],
+        style: typeof rawShayari.style === 'string' ? rawShayari.style : 'deep-space',
+        date: rawShayari.date || new Date().toISOString(),
+        isFavorite: Boolean(rawShayari.isFavorite)
+    };
+}
 
 // --- 5. Application Init & Core Events ---
 document.addEventListener('DOMContentLoaded', async () => {
-    loadSettings();
-    await loadShayaris();
-    initTheme();
-    setupNavigation();
-    setupFormListeners();
-    setupAudioRecording();
-    setupModalListeners();
-    setupSettingsTab();
-    setupSparks();
-    
-    // Initialize premium sanctuary greeting message
-    updateSanctuaryGreeting();
-    
-    // Load initial counts
-    updateInsights();
+    try {
+        loadSettings();
+        await loadShayaris();
+        initTheme();
+        setupNavigation();
+        setupLibraryFilters();
+        setupFormListeners();
+        setupAudioRecording();
+        setupModalListeners();
+        setupSettingsTab();
+        setupSparks();
+        
+        // Initialize premium sanctuary greeting message
+        updateSanctuaryGreeting();
+        
+        // Load initial counts
+        updateInsights();
+    } catch (error) {
+        console.error('Initialization error:', error);
+        showToast('Something went wrong while loading. Please refresh once.', 'danger');
+    }
 });
 
 // --- 6. Toast Notification Manager ---
@@ -253,8 +287,7 @@ function showToast(message, type = 'success') {
 function initTheme() {
     const storedTheme = localStorage.getItem('dastaan_theme') || 'dark';
     setTheme(storedTheme);
-
-    DOM.themeToggleBtn.addEventListener('click', () => {
+    addSafeListener(DOM.themeToggleBtn, 'click', () => {
         const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
         setTheme(nextTheme);
         showToast(`Switched to ${nextTheme === 'dark' ? 'Dark' : 'Light'} Mode`, 'info');
@@ -265,8 +298,9 @@ function setTheme(theme) {
     currentTheme = theme;
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('dastaan_theme', theme);
-    
+    if (!DOM.themeToggleBtn) return;
     const icon = DOM.themeToggleBtn.querySelector('i');
+    if (!icon) return;
     if (theme === 'dark') {
         icon.className = 'fa-solid fa-moon';
     } else {
@@ -379,12 +413,11 @@ function setupNavigation() {
         });
     });
 
-    DOM.quickWriteBtn.addEventListener('click', () => {
+    addSafeListener(DOM.quickWriteBtn, 'click', () => {
         resetComposerForm();
         switchTab('create');
     });
-
-    DOM.placeholderWriteBtn.addEventListener('click', () => {
+    addSafeListener(DOM.placeholderWriteBtn, 'click', () => {
         resetComposerForm();
         switchTab('create');
     });
@@ -424,8 +457,15 @@ function switchTab(tabId) {
 // --- 10. Shayari Storage & Loading ---
 async function loadShayaris() {
     const stored = localStorage.getItem('dastaan_shayaris');
-    if (stored) {
-        shayaris = JSON.parse(stored);
+    if (stored && stored.trim()) {
+        try {
+            const parsed = JSON.parse(stored);
+            shayaris = Array.isArray(parsed) ? parsed.map(normalizeShayari).filter(s => s.content) : [];
+        } catch (error) {
+            console.warn('Invalid local storage payload for shayaris. Resetting to seed data.', error);
+            shayaris = [...seedShayaris];
+            saveShayarisToStorage();
+        }
     } else {
         // First run: Use seeds!
         shayaris = [...seedShayaris];
@@ -437,6 +477,26 @@ async function loadShayaris() {
 
 function saveShayarisToStorage() {
     localStorage.setItem('dastaan_shayaris', JSON.stringify(shayaris));
+}
+
+function setupLibraryFilters() {
+    addSafeListener(DOM.categoriesFilterContainer, 'click', (e) => {
+        const chip = e.target.closest('.filter-chip');
+        if (!chip) return;
+
+        // Toggle active category classes
+        const chips = DOM.categoriesFilterContainer.querySelectorAll('.filter-chip');
+        chips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+
+        activeCategoryFilter = chip.getAttribute('data-category');
+        renderShayariGrid();
+    });
+
+    // Real-time live search listener
+    addSafeListener(DOM.searchInput, 'input', () => {
+        renderShayariGrid();
+    });
 }
 
 // --- 11. Shayari Grid Rendering & Interaction ---
@@ -825,6 +885,12 @@ function setupFormListeners() {
         // Grab active visual style name
         const activeOpt = document.querySelector('.visual-option.active');
         const style = activeOpt ? activeOpt.getAttribute('data-style') : 'deep-space';
+
+        // Require content to publish
+        if (!content) {
+            showToast('Please enter some verses before publishing.', 'danger');
+            return;
+        }
 
         // Check if editing or creating a new entry
         const editId = DOM.editShayariId.value;
