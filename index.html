@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dastaan — My Personal Shayari Diary</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Noto+Serif+Devanagari:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&family=Alex+Brush&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>Dastaan</h1>
+                    <span>My Shayari Space</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#feed" class="nav-item active" data-tab="feed">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>My Library</span>
+                </a>
+                <a href="#create" class="nav-item" data-tab="create">
+                    <i class="fa-solid fa-pen-nib"></i>
+                    <span>Write Shayari</span>
+                </a>
+                <a href="#analytics" class="nav-item" data-tab="analytics">
+                    <i class="fa-solid fa-chart-simple"></i>
+                    <span>Insights</span>
+                </a>
+                <a href="#settings" class="nav-item" data-tab="settings">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar" id="userAvatar">
+                        N
+                    </div>
+                    <div class="user-info">
+                        <h4 id="profileName">Niranjan</h4>
+                        <p id="profileTitle">Poet & Storyteller</p>
+                    </div>
+                    <button class="admin-lock-btn" id="adminLockBtn" title="Unlock Admin Mode">
+                        <i class="fa-solid fa-lock"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Search by verse, title, tags...">
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggleBtn" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn btn-primary" id="quickWriteBtn">
+                        <i class="fa-solid fa-feather"></i>
+                        <span>Write Verse</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Scrollable Content -->
+            <div class="content-body">
+                
+                <!-- TAB: LIBRARY / FEED -->
+                <section id="tab-feed" class="tab-content active">
+                    <!-- Sanctuary Hero Banner -->
+                    <div class="sanctuary-hero glass">
+                        <div class="sanctuary-ornament-top">❦</div>
+                        <h2 class="sanctuary-title">Niranjan's Dastaan</h2>
+                        <div class="sanctuary-subtitle">A Sanctuary of Soulful Couplets & Shayari</div>
+                        <p class="sanctuary-greeting" id="sanctuaryGreeting">Welcome back to your quiet creative space, Niranjan.</p>
+                        <div class="sanctuary-ornament-bottom">❦</div>
+                    </div>
+
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">My Shayari Library</h2>
+                            <p class="section-subtitle">Your soulful collections, safely preserved</p>
+                        </div>
+                        <div class="filter-bar">
+                            <span class="filter-label">Categories:</span>
+                            <div class="categories-filter" id="categoriesFilterContainer">
+                                <button class="filter-chip active" data-category="all">All</button>
+                                <button class="filter-chip" data-category="Love">Love (Mohabbat)</button>
+                                <button class="filter-chip" data-category="Sad">Sad (Dard)</button>
+                                <button class="filter-chip" data-category="Life">Life (Zindagi)</button>
+                                <button class="filter-chip" data-category="Sufi">Sufi (Spiritual)</button>
+                                <button class="filter-chip" data-category="Friendship">Friendship (Dosti)</button>
+                                <button class="filter-chip" data-category="General">General</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Highlighted / Featured Card of the Day -->
+                    <div class="featured-container" id="featuredContainer" style="display: none;">
+                        <div class="featured-label">
+                            <i class="fa-solid fa-star"></i> Featured Verse
+                        </div>
+                        <div class="featured-card" id="featuredCard">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Main Grid -->
+                    <div class="shayari-grid" id="shayariGrid">
+                        <!-- Shayari Cards populated via JS -->
+                        <div class="no-data-placeholder" id="noDataPlaceholder">
+                            <div class="placeholder-icon">
+                                <i class="fa-solid fa-feather"></i>
+                            </div>
+                            <h3>No Shayari found</h3>
+                            <p>You haven't written any Shayari in this category yet. Tap the button below to compose your first masterpiece.</p>
+                            <button class="btn btn-primary" id="placeholderWriteBtn">Write My First Shayari</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB: WRITE SHAYARI -->
+                <section id="tab-create" class="tab-content">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Compose Shayari</h2>
+                            <p class="section-subtitle">Let your thoughts flow onto the digital canvas</p>
+                        </div>
+                    </div>
+
+                    <div class="composer-layout">
+                        <!-- Left Panel: Form -->
+                        <div class="composer-form-card glass">
+                            <form id="shayariForm">
+                                <input type="hidden" id="editShayariId">
+                                
+                                <div class="form-group">
+                                    <label for="shayariTitle">Title <span class="optional">(Optional)</span></label>
+                                    <input type="text" id="shayariTitle" placeholder="e.g., Khwaab, Dastaan-e-Dil, Safar...">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="shayariContent">Verses (Shayari) <span class="required">*</span></label>
+                                    <textarea id="shayariContent" required rows="6" placeholder="Write your couplets (ash'aar) here...&#10;&#10;e.g.,&#10;Hazaron khwaishein aisi ki har khwaish pe dam nikle,&#10;Bohat niklay mere arman, lekin phir bhi kam nikle."></textarea>
+                                    <div class="textarea-footer">
+                                        <span id="charCount">0 characters</span>
+                                        <span id="lineCount">0 lines</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="shayariCategory">Category</label>
+                                        <select id="shayariCategory">
+                                            <option value="General">General</option>
+                                            <option value="Love">Love (Mohabbat)</option>
+                                            <option value="Sad">Sad (Dard)</option>
+                                            <option value="Life">Life (Zindagi)</option>
+                                            <option value="Sufi">Sufi (Spiritual)</option>
+                                            <option value="Friendship">Friendship (Dosti)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="shayariTags">Tags <span class="optional">(Comma separated)</span></label>
+                                        <input type="text" id="shayariTags" placeholder="e.g., ghalib, dil, yaad">
+                                    </div>
+                                </div>
+
+                                <!-- Customize Card Visuals for Sharing -->
+                                <div class="card-visual-customizer">
+                                    <label>Card Visual Styling (for downloading / sharing)</label>
+                                    <div class="visual-options">
+                                        <div class="visual-option active" data-style="deep-space" style="background: linear-gradient(135deg, #0f0c1b, #201335);"></div>
+                                        <div class="visual-option" data-style="sunset" style="background: linear-gradient(135deg, #3a1c1c, #6b2d5c);"></div>
+                                        <div class="visual-option" data-style="forest" style="background: linear-gradient(135deg, #0d1f1f, #153c30);"></div>
+                                        <div class="visual-option" data-style="ocean" style="background: linear-gradient(135deg, #061e30, #134658);"></div>
+                                        <div class="visual-option" data-style="gold" style="background: linear-gradient(135deg, #242011, #4c3f1f);"></div>
+                                        <div class="visual-option" data-style="crimson" style="background: linear-gradient(135deg, #280a14, #5c162e);"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Voice Recorder feature -->
+                                <div class="voice-recorder-section">
+                                    <label>Audio Recitation <span class="optional">(Optional)</span></label>
+                                    <div class="recorder-container">
+                                        <button type="button" class="btn btn-secondary btn-icon" id="recordBtn">
+                                            <i class="fa-solid fa-microphone"></i>
+                                            <span id="recordText">Record Recitation</span>
+                                        </button>
+                                        <div id="recordingStatus" class="recording-status">
+                                            <span class="pulse-dot"></span> Recording... <span id="recordTimer">00:00</span>
+                                        </div>
+                                        <div id="audioPlaybackContainer" class="audio-playback-container" style="display: none;">
+                                            <audio id="audioPlayback" controls></audio>
+                                            <button type="button" class="btn btn-danger btn-sm" id="deleteAudioBtn" title="Remove Audio">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-outline" id="cancelComposeBtn">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" id="saveShayariBtn">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span id="submitBtnText">Publish Shayari</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Right Panel: Live Preview -->
+                        <div class="preview-panel">
+                            <h3>Live Preview Card</h3>
+                            <div class="live-preview-card" id="livePreviewCard">
+                                <div class="preview-ornament preview-ornament-top">❦</div>
+                                <h4 class="preview-title" id="previewTitle">Untitled</h4>
+                                <div class="preview-content" id="previewContent">
+                                    Your beautiful poetry lines will appear here in real-time...
+                                </div>
+                                <div class="preview-ornament preview-ornament-bottom">❦</div>
+                                <div class="preview-meta">
+                                    <span class="preview-date" id="previewDate">May 28, 2026</span>
+                                    <span class="preview-author" id="previewAuthor">— Shayar</span>
+                                </div>
+                            </div>
+                            <p class="preview-hint"><i class="fa-solid fa-circle-info"></i> This is exactly how your card will look when exported or shared.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB: INSIGHTS & STATS -->
+                <section id="tab-analytics" class="tab-content">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Creative Insights</h2>
+                            <p class="section-subtitle">An overview of your poetic journey</p>
+                        </div>
+                    </div>
+
+                    <div class="analytics-grid">
+                        <div class="analytics-card glass stats-main">
+                            <div class="stats-icon"><i class="fa-solid fa-feather-pointed"></i></div>
+                            <div class="stats-info">
+                                <h3 id="statTotalCount">0</h3>
+                                <p>Total Ash'aar / Shayaris</p>
+                            </div>
+                        </div>
+                        <div class="analytics-card glass stats-main">
+                            <div class="stats-icon"><i class="fa-solid fa-microphone"></i></div>
+                            <div class="stats-info">
+                                <h3 id="statRecordedCount">0</h3>
+                                <p>Recorded Narrations</p>
+                            </div>
+                        </div>
+                        <div class="analytics-card glass stats-main">
+                            <div class="stats-icon"><i class="fa-solid fa-heart"></i></div>
+                            <div class="stats-info">
+                                <h3 id="statFavoriteCount">0</h3>
+                                <p>Favorite Poems</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-charts">
+                        <!-- Category Distribution -->
+                        <div class="chart-card glass">
+                            <h3>Category Breakdown</h3>
+                            <div class="category-breakdown-list" id="categoryBreakdownList">
+                                <!-- Dynamic bars -->
+                            </div>
+                        </div>
+
+                        <!-- Writing Inspiration Card -->
+                        <div class="inspiration-card glass">
+                            <div class="inspiration-header">
+                                <i class="fa-solid fa-lightbulb"></i>
+                                <h3>Poetic Spark</h3>
+                            </div>
+                            <p class="inspiration-quote" id="inspirationQuote">
+                                "The pen is the tongue of the soul; as the thoughts of the soul are, so will the words of the pen be."
+                            </p>
+                            <span class="inspiration-author">— Miguel de Cervantes</span>
+                            <button class="btn btn-outline btn-sm" id="newQuoteBtn" style="margin-top: 15px;">
+                                <i class="fa-solid fa-rotate"></i> Get Another Spark
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB: SETTINGS -->
+                <section id="tab-settings" class="tab-content">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Settings</h2>
+                            <p class="section-subtitle">Manage your personal diary details</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-container glass">
+
+
+                        <!-- Data Management -->
+                        <div class="settings-section">
+                            <h3><i class="fa-solid fa-database"></i> Backup & Data</h3>
+                            <p class="settings-desc">Export your Shayari library to a backup file, or import previous entries. All your data resides locally on your device.</p>
+                            <div class="settings-actions">
+                                <button class="btn btn-secondary" id="exportDataBtn">
+                                    <i class="fa-solid fa-download"></i> Export Library (JSON)
+                                </button>
+                                <label for="importDataFile" class="btn btn-outline" style="cursor: pointer; display: inline-block;">
+                                    <i class="fa-solid fa-upload"></i> Import Library
+                                </label>
+                                <input type="file" id="importDataFile" accept=".json" style="display: none;">
+                                <button class="btn btn-danger" id="resetDataBtn">
+                                    <i class="fa-solid fa-trash-can"></i> Erase All Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
